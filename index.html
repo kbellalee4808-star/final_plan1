@@ -1,0 +1,226 @@
+from ds_python_interpreter import HTML
+import base64
+
+# HTML 및 CSS 구조 정의
+html_content = """
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bella · 프라이빗 멤버십 라이프스타일 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap">
+<style>
+:root{
+  --navy:#1B3A5C; --navy-deep:#0F2340; --navy-light:#2C5482;
+  --gold:#D4A94A; --gold-soft:#E5C77E; --gold-pale:#F0E0B8;
+  --ivory:#FAF7F2; --ivory-warm:#F2EBDD;
+  --text:#2A2A2A; --muted:#6B6B6B; --line:rgba(27,58,92,.12);
+  --danger:#A8453B; --safe:#2F6B4F;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{font-family:'Noto Sans KR',sans-serif;background:var(--ivory);color:var(--text);line-height:1.6;word-break:keep-all;overflow-x:hidden}
+.container{max-width:680px;margin:0 auto;padding:0 24px}
+
+/* HERO SECTION */
+.hero{
+  background:linear-gradient(160deg,var(--navy-deep) 0%,var(--navy) 60%,#264870 100%);
+  color:var(--ivory); padding:80px 24px 90px; text-align:center; position:relative; overflow:hidden;
+}
+.hero-overline{ font-size:11px; letter-spacing:.4em; color:var(--gold); text-transform:uppercase; margin-bottom:24px; font-weight:500; }
+.hero h1{ font-family:'Noto Serif KR',serif; font-size:clamp(28px,7vw,42px); font-weight:700; line-height:1.3; margin-bottom:24px; letter-spacing:-.03em; }
+.hero h1 em{ font-style:normal; color:var(--gold-soft); font-weight:900; }
+.hero-tagline{ font-family:'Noto Serif KR',serif; font-size:clamp(16px,3.5vw,18px); color:var(--gold); font-style:italic; font-weight:500; margin-bottom:14px; }
+.hero p{ font-size:14px; opacity:.8; max-width:480px; margin:0 auto; line-height:1.85; }
+
+/* COMPARE SECTION */
+section{padding:72px 0}
+.section-overline{ font-size:10px; letter-spacing:.45em; color:var(--gold); text-transform:uppercase; text-align:center; font-weight:500; margin-bottom:14px; }
+.section-title{ font-family:'Noto Serif KR',serif; font-size:clamp(22px,4.5vw,30px); font-weight:700; text-align:center; color:var(--navy-deep); margin-bottom:48px; letter-spacing:-.01em; line-height:1.4; }
+.compare-wrap{display:grid;grid-template-columns:1fr;gap:18px}
+.compare-card{ border-radius:16px; padding:36px 26px 28px; position:relative; overflow:hidden; border:1px solid var(--line); background:#fff; }
+.compare-good{ background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%); color:var(--ivory); border:none; }
+.compare-label{ font-size:11px; letter-spacing:.3em; text-transform:uppercase; font-weight:500; margin-bottom:10px; color:var(--gold); }
+.compare-name{ font-family:'Noto Serif KR',serif; font-size:22px; font-weight:700; margin-bottom:22px; line-height:1.4; }
+.compare-list{ list-style:none; font-size:14.5px; line-height:1.85; }
+.compare-list li{ padding-left:18px; position:relative; margin-bottom:8px; }
+.compare-list li::before{ content:"·"; position:absolute; left:6px; font-weight:700; color:var(--gold); }
+.compare-result{ margin-top:22px; padding-top:18px; border-top:1px solid var(--line); font-size:13px; color:var(--muted); }
+.compare-good .compare-result{ border-color:rgba(212,169,74,.3); color:var(--gold-soft); }
+.compare-result strong{ font-family:'Noto Serif KR',serif; font-size:18px; display:block; margin-top:6px; font-weight:700; color:var(--navy-deep); }
+.compare-good .compare-result strong{ color:var(--gold); }
+
+/* VISUALIZATION SECTION */
+.visual-section{ background:var(--ivory-warm); }
+.receipt-card{ background:#fff; border-radius:16px; padding:32px 24px; box-shadow:0 4px 20px rgba(0,0,0,0.05); margin-bottom:20px; }
+.receipt-title{ font-family:'Noto Serif KR',serif; font-size:18px; font-weight:700; color:var(--navy-deep); margin-bottom:20px; border-bottom:2px solid var(--gold); padding-bottom:10px; }
+.receipt-row{ display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px; }
+.receipt-row.discount{ color:var(--danger); font-weight:700; }
+.receipt-total{ border-top:1px dashed var(--line); margin-top:15px; padding-top:15px; display:flex; justify-content:space-between; font-weight:900; font-size:18px; color:var(--navy-deep); }
+
+/* COST SECTION */
+.cost-card{ background:#fff; border-radius:16px; padding:32px 24px; border:1px solid var(--line); }
+.cost-section-label{ font-family:'Noto Serif KR',serif; font-size:12px; letter-spacing:.2em; color:var(--gold); text-transform:uppercase; font-weight:700; margin:18px 0 8px; border-bottom:1px solid var(--gold-pale); padding-bottom:8px; }
+.cost-row{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px dashed var(--line); font-size:14px; }
+.cost-label small{ display:block; font-size:12px; color:var(--muted); margin-top:3px; }
+.cost-amount{ font-weight:700; color:var(--navy-deep); }
+.cost-total{ margin-top:20px; background:var(--navy-deep); color:var(--ivory); border-radius:12px; padding:24px; display:flex; justify-content:space-between; align-items:center; }
+.cost-total-amount{ font-family:'Noto Serif KR',serif; font-size:32px; font-weight:900; color:var(--gold); }
+
+/* CTA SECTION */
+.cta-section{ background:var(--ivory); padding:90px 0; text-align:center; }
+.cta-quote{ font-family:'Noto Serif KR',serif; font-size:clamp(18px,4vw,22px); color:var(--gold); font-weight:500; line-height:1.7; margin-bottom:32px; font-style:italic; }
+.cta-button{ display:inline-flex; align-items:center; gap:10px; background:var(--gold); color:var(--navy-deep); padding:18px 36px; border-radius:50px; text-decoration:none; font-weight:700; box-shadow:0 4px 14px rgba(212,169,74,0.3); transition:0.2s; }
+.cta-button:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(212,169,74,0.4); }
+
+@media (max-width:520px){
+  .container{padding:0 18px}
+  .hero{padding:60px 20px}
+  .cost-total-amount{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-overline">Lifestyle Guide by Bella</div>
+  <h1>아름다운 여정,<br><em>완벽한 멤버십 라이프스타일</em></h1>
+  <p class="hero-tagline">"우리의 여행은 멈추지 않습니다."</p>
+  <p>납입 시기를 놓쳐도 당신의 원금은 단 1달러도 사라지지 않습니다. 평생 든든한 여행 자산으로 남겨두거나, 14개월의 기적같은 코스로 인생의 질을 높여보세요.</p>
+</section>
+
+<section class="compare-section">
+  <div class="container">
+    <div class="section-overline">Two Choices</div>
+    <h2 class="section-title">당신의 소중한 자산,<br>어떤 방식으로 누리시겠어요?</h2>
+
+    <div class="compare-wrap">
+      <div class="compare-card">
+        <div class="compare-label">Choice 1 · 안심 비활성화</div>
+        <div class="compare-name">평생 유효한<br>17% VIP 할인 캐시 전환</div>
+        <ul class="compare-list">
+          <li><strong>원금 손실 ZERO:</strong> 내가 낸 돈은 100% 보존</li>
+          <li>30일 초과 시 17% 할인 지갑으로 자동 이동</li>
+          <li>전 세계 호텔, 리조트, 크루즈 예약 시 즉시 사용</li>
+          <li><strong>유효기간 없음:</strong> 언제든 필요할 때 꺼내 쓰는 비상금</li>
+        </ul>
+        <div class="compare-result">
+          당신의 자산은 안전합니다<br>
+          <strong>어디에도 없는 평생 VIP 할인권 확보</strong>
+        </div>
+      </div>
+
+      <div class="compare-card compare-good">
+        <div class="compare-label">Choice 2 · 라이프스타일 코스</div>
+        <div class="compare-name">14개월의 기적,<br>럭셔리 크루즈 2회 탑승</div>
+        <ul class="compare-list">
+          <li><strong>올 리워드 결제:</strong> 첫 크루즈는 현금 0원으로 탑승</li>
+          <li>클래식 전환 후 9개월 만에 두 번째 예약 완성</li>
+          <li>본인은 리워드 100% 사용 + 동반인과 경비 쉐어</li>
+          <li>단 14개월 만에 럭셔리 라이프의 주인공이 되는 길</li>
+        </ul>
+        <div class="compare-result">
+          진정한 멤버십의 가치<br>
+          <strong>여행이 일상이 되는 압도적인 혜택</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="visual-section">
+  <div class="container">
+    <div class="section-overline">17% Value Visualization</div>
+    <h2 class="section-title">"포인트가 사라졌나요?"<br>아니요, 더 든든하게 남았습니다.</h2>
+    <p style="text-align:center; font-size:14px; color:var(--muted); margin:-30px 0 40px;">비활성화 계정 잔액이 $1,200일 때의 놀라운 활용 예시</p>
+
+    <div class="receipt-card">
+      <div class="receipt-title">로마 럭셔리 호텔 5박</div>
+      <div class="receipt-row"><span>일반 예약가 ($250 × 5박)</span><span>$1,250.00</span></div>
+      <div class="receipt-row discount"><span>프라이빗 멤버 17% VIP 할인</span><span>−$212.50</span></div>
+      <div class="receipt-total"><span>실제 결제 금액</span><span>$1,037.50</span></div>
+      <p style="font-size:12px; color:var(--safe); margin-top:10px; font-weight:500;">✔ 약 30만 원 절약! 지갑에는 여전히 $987.50가 남아있습니다.</p>
+    </div>
+
+    <div class="receipt-card">
+      <div class="receipt-title">지중해 크루즈 2인 발코니</div>
+      <div class="receipt-row"><span>일반 크루즈 예약가</span><span>$3,600.00</span></div>
+      <div class="receipt-row discount"><span>프라이빗 멤버 17% VIP 할인</span><span>−$612.00</span></div>
+      <div class="receipt-total"><span>실제 결제 금액</span><span>$2,988.00</span></div>
+      <p style="font-size:12px; color:var(--safe); margin-top:10px; font-weight:500;">✔ 항공권 한 장 값이 절약되었습니다. 비활성화 계정도 이토록 강력합니다.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-overline">Financial Plan</div>
+    <h2 class="section-title">14개월 완성 코스<br>정확한 비용 명세서</h2>
+
+    <div class="cost-card">
+      <div class="cost-section-label">멤버십 운영비 (본인 납입)</div>
+      <div class="cost-row">
+        <div class="cost-label">프리미엄 5개월 <small>(활성화비 $250 포함 / 총 2,800R 적립)</small></div>
+        <div class="cost-amount">$1,500</div>
+      </div>
+      <div class="cost-row">
+        <div class="cost-label">클래식 9개월 <small>(첫 예약 대기 기간 / 총 1,800R 추가 적립)</small></div>
+        <div class="cost-amount">$900</div>
+      </div>
+
+      <div class="cost-section-label">크루즈 탑승 (2인 기준)</div>
+      <div class="cost-row" style="background:rgba(212,169,74,0.05); padding:15px 10px; border-radius:8px;">
+        <div class="cost-label"><strong>1차: 올 리워드 탑승 (현금 0원)</strong><small>$1,800 캐빈: 900R(50%) + 1800R(1:2결제) = 2,700R 소진</small></div>
+        <div class="cost-amount" style="color:var(--safe)">$0</div>
+      </div>
+      <div class="cost-row" style="padding:15px 10px;">
+        <div class="cost-label"><strong>2차: 럭셔리 발코니 동반인 쉐어</strong><small>$3,800 캐빈: 본인 1,900R 사용 + 동반인 $1,900 결제</small></div>
+        <div class="cost-amount">$1,900</div>
+      </div>
+
+      <div class="cost-total">
+        <div class="cost-total-label">Grand Total <br><small style="font-size:10px; opacity:0.7;">(본인 원금 $2,400 + 동반인 $1,900)</small></div>
+        <div class="cost-total-amount">$4,300</div>
+      </div>
+
+      <div class="cost-note" style="margin-top:24px; text-align:center; font-size:13px; color:var(--muted); line-height:1.8;">
+        시장가 <strong>$5,600 이상</strong>의 가치를 단 <strong>$2,400</strong>의 본인 원금으로 완성합니다.<br>
+        14개월 만에 럭셔리 크루즈를 두 번이나 타는 라이프스타일,<br>
+        오직 우리 멤버십 안에서만 가능합니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <p class="cta-quote">"프라이빗 클럽이 선물하는 진짜 기적은,<br>세계 여행이 내 평범한 일상이 되는 것입니다."</p>
+    <div class="cta-divider" style="width:40px; height:1px; background:var(--line); margin:0 auto 32px;"></div>
+    <div class="cta-icon" style="font-size:28px; margin-bottom:14px;">☕</div>
+    <div class="cta-overline">Partner with Bella</div>
+    <h3 class="cta-title">당신의 소중한 리워드,<br>함께 지켜드리고 활용해 드릴게요.</h3>
+    <p class="cta-desc" style="font-size:14px; color:var(--muted); margin-bottom:30px;">당신의 삶에 가장 잘 맞는 멤버십 활용법을 찾아드립니다.<br>부담 없이 상담을 신청하세요.</p>
+    <a href="https://open.kakao.com/o/sbJudavg" class="cta-button">
+      ✈️🛳️ 파트너와 함께 점검하기
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div style="background:var(--navy-deep); color:rgba(250,247,242,0.4); text-align:center; padding:32px 24px; font-size:12px;">
+    © Bella · InCruises National Director · K-BOD Global Leader
+  </div>
+</footer>
+
+</body>
+</html>
+"""
+
+# HTML 파일 저장 및 PDF 변환 (weasyprint 사용)
+with open("Membership_Lifestyle_Guide_v1.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+from weasyprint import HTML as WP_HTML
+WP_HTML(string=html_content).write_pdf("Membership_Lifestyle_Guide_Bella_Final.pdf")
